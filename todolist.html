@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .task-item.completed span {
+            text-decoration: line-through;
+            color: #bd0b22;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 md:p-8">
+        
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">My To-Do List</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Stay organized and productive.</p>
+        </div>
+
+        
+        <div class="flex gap-3 mb-6">
+            <input type="text" id="taskInput" placeholder="Add a new task..." class="flex-grow bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block w-full p-3 transition duration-300" autocomplete="off">
+            <button id="addTaskBtn" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center transition-transform transform hover:scale-105">Add</button>
+        </div>
+
+        
+        <ul id="taskList" class="space-y-3">
+            
+        </ul>
+        
+        
+        <div id="emptyMessage" class="text-center text-gray-500 dark:text-gray-400 py-6 hidden">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">All tasks completed!</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">You're all caught up.</p>
+        </div>
+
+    </div>
+
+    <script>
+
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const taskList = document.getElementById('taskList');
+        const emptyMessage = document.getElementById('emptyMessage');
+
+        
+
+        
+        function updateEmptyMessage() {
+            if (taskList.children.length === 0) {
+                emptyMessage.classList.remove('hidden');
+            } else {
+                emptyMessage.classList.add('hidden');
+            }
+        }
+
+        
+        function addTask(taskText) {
+            
+            if (taskText.trim() === '') {
+                return;
+            }
+
+            
+            const li = document.createElement('li');
+            li.className = 'task-item flex items-center justify-between bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow-sm transition-all duration-300';
+            
+            
+            const taskSpan = document.createElement('span');
+            taskSpan.textContent = taskText;
+            taskSpan.className = 'flex-grow text-gray-800 dark:text-gray-200 cursor-pointer';
+            
+            
+            taskSpan.addEventListener('click', () => {
+                li.classList.toggle('completed');
+            });
+
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'Delete';
+            deleteBtn.className = 'ml-4 text-red-500 hover:text-red-700 dark:hover:text-red-400 font-semibold text-sm transition-colors duration-300';
+            
+            
+            deleteBtn.addEventListener('click', () => {
+                
+                li.classList.add('opacity-0', 'scale-95');
+                li.addEventListener('transitionend', () => {
+                    li.remove();
+                    updateEmptyMessage();
+                });
+            });
+
+
+            li.appendChild(taskSpan);
+            li.appendChild(deleteBtn);
+
+        
+            taskList.appendChild(li);
+
+            taskInput.value = '';
+
+        
+            updateEmptyMessage();
+        }
+
+      
+        addTaskBtn.addEventListener('click', () => {
+            addTask(taskInput.value);
+        });
+
+    
+        taskInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                addTask(taskInput.value);
+            }
+        });
+
+       
+        updateEmptyMessage();
+    </script>
+
+</body>
+</html>
